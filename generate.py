@@ -123,11 +123,44 @@ class CrosswordCreator():
         False if no revision was made.
         """
         revised = False
-        temp1 = self.crossword.overlaps(x,y)
+        temp1 = self.crossword.overlaps[x,y]
         temp2 = set()
+        for value1 in self.domains[x]:
+            check = 0
+            for value2 in self.domains[y]:
+                if value2[temp1[1]] == value1[temp1[0]]:
+                    check = 1
+            if check == 0:
+                revised = True
+                temp2.add(value1)
+        for value1 in temp2:
+            self.domains[x].remove(value1)
+        return revised
+        """
+        print(x)
+        print(y)
+        print((x,y))
+        revised = False
+        print("--------")
+        print(self.crossword.overlaps)
+        print("--------")
+        print(self.domains)
+        print("--------")
+        for y in self.domains[x]:
+            print(y)
+        for temp3 in self.crossword.overlaps:
+            print(f"see this {temp3[0]} {x}")
+            if temp3[0] == x and temp3[1] == y:
+                temp1 = temp3
+        #temp1 = self.crossword.overlaps(x,y)
+        temp2 = set()
+        print(f"Look here!! {temp1}")
+
+        #for something in temp1:
+        #    print(temp1[something])
         for y in self.domains[x]:
             for z in self.domains[y]:
-                if z[temp1[1]] != y[temp1[0]]:
+                if z[temp1[x,y][1]] != y[temp1[x,y][0]]:
                     print(f"Not equal -- mismatch at {temp1}")
                     print(y,z)
                     temp2.add(y)
@@ -136,6 +169,7 @@ class CrosswordCreator():
             if x1 in self.domains[x]:
                 self.domains[x].remove(x1)
         return revised
+        """
         #raise NotImplementedError
 
     def ac3(self, arcs=None):
@@ -147,7 +181,27 @@ class CrosswordCreator():
         Return True if arc consistency is enforced and no domains are empty;
         return False if one or more domains end up empty.
         """
-        raise NotImplementedError
+        if arcs == None:
+            queue = []
+            for x in self.domains:
+                temp = self.crossword.neighbors(x)
+                for y in temp:
+                    if (x,y) not in queue:
+                        queue.append((x,y))
+        else:
+            queue = arcs
+        while len(queue) != 0:
+            (x1,y1) = queue[0]
+            queue = queue[1:]
+            if self.revise(x1, y1):
+                if len(self.domains[x1]) == 0:
+                    return False
+                temp1 = self.crossword.neighbors(x1)
+                temp1.remove(y1)
+                for z in temp1:
+                    queue.append((z,x1))
+        return True
+        #raise NotImplementedError
 
     def assignment_complete(self, assignment):
         """

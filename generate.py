@@ -136,40 +136,7 @@ class CrosswordCreator():
         for value1 in temp2:
             self.domains[x].remove(value1)
         return revised
-        """
-        print(x)
-        print(y)
-        print((x,y))
-        revised = False
-        print("--------")
-        print(self.crossword.overlaps)
-        print("--------")
-        print(self.domains)
-        print("--------")
-        for y in self.domains[x]:
-            print(y)
-        for temp3 in self.crossword.overlaps:
-            print(f"see this {temp3[0]} {x}")
-            if temp3[0] == x and temp3[1] == y:
-                temp1 = temp3
-        #temp1 = self.crossword.overlaps(x,y)
-        temp2 = set()
-        print(f"Look here!! {temp1}")
 
-        #for something in temp1:
-        #    print(temp1[something])
-        for y in self.domains[x]:
-            for z in self.domains[y]:
-                if z[temp1[x,y][1]] != y[temp1[x,y][0]]:
-                    print(f"Not equal -- mismatch at {temp1}")
-                    print(y,z)
-                    temp2.add(y)
-                    revised = True
-        for x1 in temp2:
-            if x1 in self.domains[x]:
-                self.domains[x].remove(x1)
-        return revised
-        """
         #raise NotImplementedError
 
     def ac3(self, arcs=None):
@@ -208,7 +175,13 @@ class CrosswordCreator():
         Return True if `assignment` is complete (i.e., assigns a value to each
         crossword variable); return False otherwise.
         """
-        raise NotImplementedError
+        print(assignment)
+        check = True
+        for variable in assignment:
+            if len(assignment[variable]) != 1:
+                check = False
+        return check
+        #raise NotImplementedError
 
     def consistent(self, assignment):
         """

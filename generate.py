@@ -263,13 +263,18 @@ class CrosswordCreator():
                 break
         for value in self.domains[temp2]:
             assignment[temp2] = value
+            print("--------")
+            print(value,temp2,assignment[temp2])
+            print("--------")
             temp3 = self.consistent(assignment)
             if temp3:
                 result = self.backtrack(assignment)
                 if result:
                     return result
+                if temp2 in assignment:
+                    assignment.pop(temp2)
+            if temp2 in assignment:
                 assignment.pop(temp2)
-            assignment.pop(temp2)
         return False
         #raise NotImplementedError
 

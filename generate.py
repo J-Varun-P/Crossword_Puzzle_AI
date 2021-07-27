@@ -177,9 +177,10 @@ class CrosswordCreator():
         """
         print(assignment)
         check = True
-        for variable in assignment:
-            if len(assignment[variable]) != 1:
+        for variable in self.crossword.variables:
+            if variable not in assignment:
                 check = False
+                return check
         return check
         #raise NotImplementedError
 
@@ -188,7 +189,23 @@ class CrosswordCreator():
         Return True if `assignment` is consistent (i.e., words fit in crossword
         puzzle without conflicting characters); return False otherwise.
         """
-        raise NotImplementedError
+        for variable in assignment:
+            if variable.length != len(assignment[variable]):
+                return False
+        temp = []
+        for variable in assignment:
+            if assignment[variable] in temp:
+                return False
+            temp.add(assignment[variable])
+        for variable1 in assignment:
+            temp2 = self.crossword.neighbors(variable1)
+            for variable2 in temp2:
+                temp3 = self.crossword.overlaps[variable1,variable2]
+                if temp3 is not None:
+                    if assignment[variable1][temp3[0]] != assignment[variable2][temp3[1]]:
+                        return False
+        return True
+        #raise NotImplementedError
 
     def order_domain_values(self, var, assignment):
         """
@@ -197,7 +214,11 @@ class CrosswordCreator():
         The first value in the list, for example, should be the one
         that rules out the fewest values among the neighbors of `var`.
         """
-        raise NotImplementedError
+        temp = []
+        for x in self.domains[var]:
+            temp.append(x)
+        return temp
+        #raise NotImplementedError
 
     def select_unassigned_variable(self, assignment):
         """
@@ -207,7 +228,13 @@ class CrosswordCreator():
         degree. If there is a tie, any of the tied variables are acceptable
         return values.
         """
-        raise NotImplementedError
+        temp = []
+        for x in self.variables:
+            temp.append(x)
+        for x in temp:
+            if x not in assignment:
+                return x
+        #raise NotImplementedError
 
     def backtrack(self, assignment):
         """

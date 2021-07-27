@@ -268,8 +268,8 @@ class CrosswordCreator():
                 result = self.backtrack(assignment)
                 if result:
                     return result
-                assignment.remove(temp2)
-            assignment.remove(temp2)
+                assignment.pop(temp2)
+            assignment.pop(temp2)
         return False
         #raise NotImplementedError
 

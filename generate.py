@@ -196,14 +196,18 @@ class CrosswordCreator():
         for variable in assignment:
             if assignment[variable] in temp:
                 return False
-            temp.add(assignment[variable])
+            temp.append(assignment[variable])
         for variable1 in assignment:
-            temp2 = self.crossword.neighbors(variable1)
-            for variable2 in temp2:
-                temp3 = self.crossword.overlaps[variable1,variable2]
-                if temp3 is not None:
-                    if assignment[variable1][temp3[0]] != assignment[variable2][temp3[1]]:
-                        return False
+            if len(assignment) != 0:
+                temp2 = self.crossword.neighbors(variable1)
+                for variable2 in temp2:
+                    if variable2 in assignment:
+                        temp3 = self.crossword.overlaps[variable1,variable2]
+                        if temp3 is not None:
+                            print(temp3,temp3[0],temp3[1])
+                            print(assignment[variable1],assignment[variable2])
+                            if assignment[variable1][temp3[0]] != assignment[variable2][temp3[1]]:
+                                return False
         return True
         #raise NotImplementedError
 
@@ -229,7 +233,7 @@ class CrosswordCreator():
         return values.
         """
         temp = []
-        for x in self.variables:
+        for x in self.crossword.variables:
             temp.append(x)
         for x in temp:
             if x not in assignment:
@@ -245,7 +249,29 @@ class CrosswordCreator():
 
         If no assignment is possible, return None.
         """
-        raise NotImplementedError
+        check = True
+        temp1 = []
+        for variable in self.crossword.variables:
+            temp1.append(variable)
+            if variable not in assignment:
+                check = False
+        if check == True:
+            return assignment
+        for variable in temp1:
+            if variable not in assignment:
+                temp2 = variable
+                break
+        for value in self.domains[temp2]:
+            assignment[temp2] = value
+            temp3 = self.consistent(assignment)
+            if temp3:
+                result = self.backtrack(assignment)
+                if result:
+                    return result
+                assignment.remove(temp2)
+            assignment.remove(temp2)
+        return False
+        #raise NotImplementedError
 
 
 def main():

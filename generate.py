@@ -269,13 +269,17 @@ class CrosswordCreator():
             temp3 = self.consistent(assignment)
             if temp3:
                 result = self.backtrack(assignment)
+                print("-----Result-----")
+                print(result)
+                print("-----Result-----")
                 if result:
                     return result
-                if temp2 in assignment:
-                    assignment.pop(temp2)
+                else:
+                    if temp2 in assignment:
+                        assignment.pop(temp2)
             if temp2 in assignment:
                 assignment.pop(temp2)
-        return False
+        return None
         #raise NotImplementedError
 
 

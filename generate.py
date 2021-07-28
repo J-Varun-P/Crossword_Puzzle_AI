@@ -100,13 +100,13 @@ class CrosswordCreator():
          constraints; in this case, the length of the word.)
         """
         for v in self.domains:
-            print(v)
-            print(f"Variable Length is {v.length}")
+            #print(v)
+            #print(f"Variable Length is {v.length}")
             temp = set()
             for x in self.domains[v]:
                 if len(x) != v.length:
-                    print(x)
-                    print(f"Length is {len(x)}")
+                    #print(x)
+                    #print(f"Length is {len(x)}")
                     temp.add(x)
             for y in temp:
                 if y in self.domains[v]:
@@ -175,7 +175,7 @@ class CrosswordCreator():
         Return True if `assignment` is complete (i.e., assigns a value to each
         crossword variable); return False otherwise.
         """
-        print(assignment)
+        #print(assignment)
         check = True
         for variable in self.crossword.variables:
             if variable not in assignment:
@@ -204,8 +204,8 @@ class CrosswordCreator():
                     if variable2 in assignment:
                         temp3 = self.crossword.overlaps[variable1,variable2]
                         if temp3 is not None:
-                            print(temp3,temp3[0],temp3[1])
-                            print(assignment[variable1],assignment[variable2])
+                            #print(temp3,temp3[0],temp3[1])
+                            #print(assignment[variable1],assignment[variable2])
                             if assignment[variable1][temp3[0]] != assignment[variable2][temp3[1]]:
                                 return False
         return True
@@ -218,10 +218,26 @@ class CrosswordCreator():
         The first value in the list, for example, should be the one
         that rules out the fewest values among the neighbors of `var`.
         """
+        """
         temp = []
         for x in self.domains[var]:
             temp.append(x)
         return temp
+        """
+        temp = []
+        for x in self.domains[var]:
+            temp.append(x)
+        temp2 = {}
+        for x in temp:
+            z = 0
+            temp3 = self.crossword.neighbors(var)
+            for y in temp3:
+                meeting_point = self.crossword.overlaps[var,y]
+                for value in self.domains[y]:
+                    if value[meeting_point[1]] != x[meeting_point[0]]:
+                        z += 1
+            temp2[x] = z
+        temp.sort(key=lambda x: temp2[x])
         #raise NotImplementedError
 
     def select_unassigned_variable(self, assignment):
@@ -234,10 +250,21 @@ class CrosswordCreator():
         """
         temp = []
         for x in self.crossword.variables:
-            temp.append(x)
-        for x in temp:
             if x not in assignment:
-                return x
+                temp.append(x)
+        temp.sort(key=lambda x: len(self.domains[x]))
+        if len(temp) > 1:
+            if len(self.domains[temp[0]]) < len(self.domains[temp[1]]):
+                return temp[0]
+            else:
+                temp2 = []
+                for x in temp:
+                    if len(self.domains[x]) == len(self.domains[temp[0]]):
+                        temp2.append(x)
+                temp2.sort(key=lambda x: len(self.crossword.neighbors(x)), reverse=True)
+                return temp2[0]
+        else:
+            return temp[0]
         #raise NotImplementedError
 
     def backtrack(self, assignment):
@@ -263,15 +290,15 @@ class CrosswordCreator():
                 break
         for value in self.domains[temp2]:
             assignment[temp2] = value
-            print("--------")
-            print(value,temp2,assignment[temp2])
-            print("--------")
+            #print("--------")
+            #print(value,temp2,assignment[temp2])
+            #print("--------")
             temp3 = self.consistent(assignment)
             if temp3:
                 result = self.backtrack(assignment)
-                print("-----Result-----")
-                print(result)
-                print("-----Result-----")
+                #print("-----Result-----")
+                #print(result)
+                #print("-----Result-----")
                 if result:
                     return result
                 else:

@@ -224,6 +224,7 @@ class CrosswordCreator():
             temp.append(x)
         return temp
         """
+        #print("In values")
         temp = []
         for x in self.domains[var]:
             temp.append(x)
@@ -237,7 +238,9 @@ class CrosswordCreator():
                     if value[meeting_point[1]] != x[meeting_point[0]]:
                         z += 1
             temp2[x] = z
+        #print(temp2)
         temp.sort(key=lambda x: temp2[x])
+        return temp
         #raise NotImplementedError
 
     def select_unassigned_variable(self, assignment):
@@ -248,6 +251,7 @@ class CrosswordCreator():
         degree. If there is a tie, any of the tied variables are acceptable
         return values.
         """
+        #print("Hello from variable")
         temp = []
         for x in self.crossword.variables:
             if x not in assignment:
@@ -276,6 +280,7 @@ class CrosswordCreator():
 
         If no assignment is possible, return None.
         """
+        #print("Hello backtrack")
         check = True
         temp1 = []
         for variable in self.crossword.variables:
@@ -284,11 +289,15 @@ class CrosswordCreator():
                 check = False
         if check == True:
             return assignment
+        """
         for variable in temp1:
             if variable not in assignment:
                 temp2 = variable
                 break
-        for value in self.domains[temp2]:
+        """
+        temp2 = self.select_unassigned_variable(assignment)
+        #for value in self.domains[temp2]:
+        for value in self.order_domain_values(temp2, assignment):
             assignment[temp2] = value
             #print("--------")
             #print(value,temp2,assignment[temp2])

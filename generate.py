@@ -100,13 +100,9 @@ class CrosswordCreator():
          constraints; in this case, the length of the word.)
         """
         for v in self.domains:
-            #print(v)
-            #print(f"Variable Length is {v.length}")
             temp = set()
             for x in self.domains[v]:
                 if len(x) != v.length:
-                    #print(x)
-                    #print(f"Length is {len(x)}")
                     temp.add(x)
             for y in temp:
                 if y in self.domains[v]:
@@ -136,7 +132,6 @@ class CrosswordCreator():
         for value1 in temp2:
             self.domains[x].remove(value1)
         return revised
-
         #raise NotImplementedError
 
     def ac3(self, arcs=None):
@@ -175,7 +170,6 @@ class CrosswordCreator():
         Return True if `assignment` is complete (i.e., assigns a value to each
         crossword variable); return False otherwise.
         """
-        #print(assignment)
         check = True
         for variable in self.crossword.variables:
             if variable not in assignment:
@@ -204,8 +198,6 @@ class CrosswordCreator():
                     if variable2 in assignment:
                         temp3 = self.crossword.overlaps[variable1,variable2]
                         if temp3 is not None:
-                            #print(temp3,temp3[0],temp3[1])
-                            #print(assignment[variable1],assignment[variable2])
                             if assignment[variable1][temp3[0]] != assignment[variable2][temp3[1]]:
                                 return False
         return True
@@ -224,7 +216,6 @@ class CrosswordCreator():
             temp.append(x)
         return temp
         """
-        #print("In values")
         temp = []
         for x in self.domains[var]:
             temp.append(x)
@@ -238,7 +229,6 @@ class CrosswordCreator():
                     if value[meeting_point[1]] != x[meeting_point[0]]:
                         z += 1
             temp2[x] = z
-        #print(temp2)
         temp.sort(key=lambda x: temp2[x])
         return temp
         #raise NotImplementedError
@@ -251,7 +241,6 @@ class CrosswordCreator():
         degree. If there is a tie, any of the tied variables are acceptable
         return values.
         """
-        #print("Hello from variable")
         temp = []
         for x in self.crossword.variables:
             if x not in assignment:
@@ -280,7 +269,6 @@ class CrosswordCreator():
 
         If no assignment is possible, return None.
         """
-        #print("Hello backtrack")
         check = True
         temp1 = []
         for variable in self.crossword.variables:
@@ -296,18 +284,11 @@ class CrosswordCreator():
                 break
         """
         temp2 = self.select_unassigned_variable(assignment)
-        #for value in self.domains[temp2]:
         for value in self.order_domain_values(temp2, assignment):
             assignment[temp2] = value
-            #print("--------")
-            #print(value,temp2,assignment[temp2])
-            #print("--------")
             temp3 = self.consistent(assignment)
             if temp3:
                 result = self.backtrack(assignment)
-                #print("-----Result-----")
-                #print(result)
-                #print("-----Result-----")
                 if result:
                     return result
                 else:
